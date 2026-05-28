@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua Market - Fresh Fish & Seafood Nigeria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #006994;
+            --primary-dark: #004d70;
+            --accent: #00bcd4;
+            --accent-light: #e0f7fa;
+            --text: #1a1a2e;
+            --text-light: #555;
+            --bg: #ffffff;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .navbar.scrolled { box-shadow: var(--shadow); }
+        .logo {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.6rem; font-weight: 800; color: var(--primary);
+            text-decoration: none;
+        }
+        .logo i { font-size: 2rem; color: var(--accent); }
+        .nav-links {
+            display: flex; gap: 35px; list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none; color: var(--text);
+            font-weight: 500; font-size: 0.95rem;
+            position: relative; transition: color 0.3s;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0;
+            width: 0; height: 2px; background: var(--primary);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+        .nav-actions {
+            display: flex; align-items: center; gap: 20px;
+        }
+        .cart-btn {
+            position: relative; background: none; border: none;
+            font-size: 1.4rem; color: var(--text); cursor: pointer;
+            padding: 8px; border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .cart-btn:hover { background: var(--accent-light); color: var(--primary); }
+        .cart-count {
+            position: absolute; top: -2px; right: -2px;
+            background: var(--danger); color: white;
+            font-size: 0.7rem; font-weight: 700;
+            width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mobile-menu-btn {
+            display: none; background: none; border: none;
+            font-size: 1.5rem; cursor: pointer;
+        }
+        
+        .page {
+            display: none; min-height: 100vh; padding-top: 80px;
+        }
+        .page.active { display: block; }
+        
+        .hero-section {
+            min-height: 100vh; position: relative;
+            background: linear-gradient(180deg, #87CEEB 0%, #B0E0E6 20%, #E0F7FA 45%, #ffffff 70%, #f0f9ff 100%);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; perspective: 1000px;
+        }
+        .water-surface {
+            position: absolute; bottom: 38%; left: 0; right: 0;
+            height: 4px; background: linear-gradient(90deg, transparent, rgba(0,188,212,0.6), var(--accent), rgba(0,188,212,0.6), transparent);
+            animation: shimmer 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(0,188,212,0.4);
+        }
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        .water-ripple {
+            position: absolute; bottom: 36%; left: 50%; transform: translateX(-50%);
+            width: 250px; height: 25px;
+            border: 3px solid rgba(0,188,212,0.4);
+            border-radius: 50%;
+            animation: ripple 2.5s ease-out infinite;
+        }
+        .water-ripple:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        @keyframes ripple {
+            0% { width: 80px; height: 8px; opacity: 1; }
+            100% { width: 500px; height: 60px; opacity: 0; }
+        }
+        
+        .fish-3d-scene {
+            position: relative;
+            width: 400px; height: 300px;
+            transform-style: preserve-3d;
+            animation: fishJump3D 4s ease-in-out infinite;
+        }
+        @keyframes fishJump3D {
+            0%, 100% { 
+                transform: translateY(150px) rotateX(20deg) rotateZ(-10deg) scale(0.8); 
+                opacity: 0; 
+            }
+            8% { opacity: 1; }
+            40% { 
+                transform: translateY(-100px) rotateX(-15deg) rotateZ(5deg) scale(1.1); 
+            }
+            50% { 
+                transform: translateY(-140px) rotateX(-25deg) rotateZ(0deg) scale(1.15); 
+            }
+            60% { 
+                transform: translateY(-100px) rotateX(-10deg) rotateZ(-3deg) scale(1.05); 
+            }
+            92% { opacity: 1; }
+            100% { 
+                transform: translateY(150px) rotateX(25deg) rotateZ(10deg) scale(0.8); 
+                opacity: 0; 
+            }
+        }
+        
+        
+        .fish-realistic {
+            width: 380px; height: 220px;
+            filter: drop-shadow(0 15px 40px rgba(0,80,120,0.4));
+            transform-style: preserve-3d;
+        }
+        
+        
+        .fish-body-shine {
+            animation: bodyShine 4s ease-in-out infinite;
+        }
+        @keyframes bodyShine {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+        
+        .fish-tail {
+            transform-origin: 45px 80px;
+            animation: tailWag 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes tailWag {
+            0% { transform: rotate(-8deg); }
+            100% { transform: rotate(8deg); }
+        }
+        
+        .fish-fin-top {
+            transform-origin: 130px 40px;
+            animation: finFlutter 0.4s ease-in-out infinite alternate;
+        }
+        .fish-fin-bottom {
+            transform-origin: 130px 120px;
+            animation: finFlutter 0.4s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes finFlutter {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+        
+        
+        .fish-eye-lid {
+            animation: eyeBlink 3s ease-in-out infinite;
+        }
+        @keyframes eyeBlink {
+            0%, 90%, 100% { opacity: 0; }
+            95% { opacity: 1; }
+        }
+        
+        
+        .splash-container {
+            position: absolute; bottom: 35%; left: 50%; transform: translateX(-50%);
+            width: 300px; height: 150px;
+            pointer-events: none;
+        }
+        .splash-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(0,188,212,0.6));
+            animation: splashParticle 4s ease-out infinite;
+        }
+        @keyframes splashParticle {
+            0% { 
+                transform: translate(0, 0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(var(--tx), var(--ty)) scale(0); 
+                opacity: 0; 
+            }
+        }
+        
+        .water-droplets {
+            position: absolute; bottom: 35%; left: 50%; transform: translateX(-50%);
+            width: 200px; height: 200px;
+            pointer-events: none;
+        }
+        .droplet {
+            position: absolute;
+            width: 4px; height: 12px;
+            background: linear-gradient(to bottom, rgba(0,188,212,0.8), rgba(0,188,212,0.2));
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: dropletFall 4s ease-in infinite;
+        }
+        @keyframes dropletFall {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(150px) scale(0.3); opacity: 0; }
+        }
+        
+        
+        .bubbles-3d {
+            position: absolute; width: 100%; height: 100%; 
+            overflow: hidden; pointer-events: none;
+            perspective: 600px;
+        }
+        .bubble-3d {
+            position: absolute; bottom: -60px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(0,188,212,0.3), rgba(0,188,212,0.1));
+            box-shadow: inset -3px -3px 8px rgba(0,0,0,0.1), inset 3px 3px 8px rgba(255,255,255,0.8);
+            animation: bubbleRise3D linear infinite;
+            transform-style: preserve-3d;
+        }
+        @keyframes bubbleRise3D {
+            0% { 
+                transform: translateY(0) translateZ(0) rotateX(0deg) scale(1); 
+                opacity: 0.7; 
+            }
+            50% { 
+                transform: translateY(-50vh) translateZ(50px) rotateX(180deg) scale(0.9); 
+                opacity: 0.5; 
+            }
+            100% { 
+                transform: translateY(-120vh) translateZ(-30px) rotateX(360deg) scale(0.4); 
+                opacity: 0; 
+            }
+        }
+        
+        .water-caustics {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse 80px 40px at 20% 30%, rgba(0,188,212,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 60px 30px at 70% 20%, rgba(0,188,212,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 100px 50px at 50% 60%, rgba(0,188,212,0.05) 0%, transparent 70%),
+                radial-gradient(ellipse 70px 35px at 80% 80%, rgba(0,188,212,0.07) 0%, transparent 70%);
+            animation: causticsMove 8s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes causticsMove {
+            0% { transform: translateX(-20px) translateY(-10px); }
+            100% { transform: translateX(20px) translateY(10px); }
+        }
+        
+        .hero-content {
+            position: absolute; bottom: 12%; text-align: center; z-index: 20;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        .hero-content p {
+            font-size: 1.2rem; color: var(--text-light); margin-bottom: 30px;
+            max-width: 500px; margin-left: auto; margin-right: auto;
+        }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; padding: 15px 40px; border-radius: 50px;
+            font-size: 1rem; font-weight: 600; text-decoration: none;
+            border: none; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(0,105,148,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,105,148,0.4);
+        }
+        
+        .category-preview {
+            padding: 80px 5%;
+            background: var(--bg);
+        }
+        .section-header {
+            text-align: center; margin-bottom: 50px;
+        }
+        .section-header h2 {
+            font-size: 2.5rem; font-weight: 700; color: var(--text);
+            margin-bottom: 10px;
+        }
+        .section-header p {
+            color: var(--text-light); font-size: 1.05rem;
+        }
+        .category-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+            max-width: 1200px; margin: 0 auto;
+        }
+        .category-card {
+            background: white; border-radius: 20px; overflow: hidden;
+            box-shadow: var(--shadow); transition: all 0.4s;
+            cursor: pointer; border: 1px solid var(--border);
+        }
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        .category-card img {
+            width: 100%; height: 220px; object-fit: cover;
+        }
+        .category-card-body {
+            padding: 25px; text-align: center;
+        }
+        .category-card-body h3 {
+            font-size: 1.3rem; font-weight: 600; margin-bottom: 8px;
+        }
+        .category-card-body p {
+            color: var(--text-light); font-size: 0.9rem;
+        }
+        .category-card-body .cat-icon {
+            font-size: 2.5rem; margin-bottom: 15px;
+            display: block;
+        }
+        
+        .shop-header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 60px 5% 40px; text-align: center; color: white;
+        }
+        .shop-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .shop-header p { opacity: 0.9; }
+        .shop-filters {
+            display: flex; justify-content: center; gap: 15px;
+            padding: 25px 5%; background: var(--bg-light);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 10px 25px; border-radius: 30px; border: 2px solid var(--border);
+            background: white; font-family: 'Poppins', sans-serif;
+            font-weight: 500; cursor: pointer; transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary); color: white; border-color: var(--primary);
+        }
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px; padding: 40px 5%; max-width: 1400px; margin: 0 auto;
+        }
+        .product-card {
+            background: white; border-radius: 16px;
+            overflow: hidden; box-shadow: var(--shadow);
+            transition: all 0.3s; border: 1px solid var(--border);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .product-img-wrap {
+            position: relative; height: 220px; overflow: hidden;
+            background: var(--bg-light);
+        }
+        .product-img-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .product-card:hover .product-img-wrap img { transform: scale(1.08); }
+        .product-badge {
+            position: absolute; top: 12px; left: 12px;
+            background: var(--success); color: white;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .product-body { padding: 20px; }
+        .product-category {
+            font-size: 0.75rem; color: var(--primary);
+            font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .product-name {
+            font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;
+        }
+        .product-desc {
+            font-size: 0.85rem; color: var(--text-light); margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .product-footer {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .product-price {
+            font-size: 1.3rem; font-weight: 700; color: var(--primary);
+        }
+        .product-price span {
+            font-size: 0.85rem; color: var(--text-light); font-weight: 400;
+        }
+        .add-to-cart {
+            background: var(--primary); color: white;
+            border: none; padding: 10px 20px; border-radius: 10px;
+            font-family: 'Poppins', sans-serif; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .add-to-cart:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+        .add-to-cart.added {
+            background: var(--success);
+        }
+        
+        
+        .cart-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            opacity: 0; visibility: hidden; transition: all 0.3s;
+        }
+        .cart-overlay.open { opacity: 1; visibility: visible; }
+        .cart-sidebar {
+            position: fixed; top: 0; right: -450px; bottom: 0;
+            width: 450px; max-width: 100%;
+            background: white; z-index: 2001;
+            transition: right 0.4s ease; display: flex; flex-direction: column;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15);
+        }
+        .cart-sidebar.open { right: 0; }
+        .cart-header {
+            padding: 25px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .cart-header h2 { font-size: 1.3rem; }
+        .close-cart {
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: var(--text-light);
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s;
+        }
+        .close-cart:hover { background: var(--bg-light); color: var(--danger); }
+        .cart-items {
+            flex: 1; overflow-y: auto; padding: 20px;
+        }
+        .cart-empty {
+            text-align: center; padding: 60px 20px; color: var(--text-light);
+        }
+        .cart-empty i { font-size: 4rem; margin-bottom: 20px; color: var(--border); }
+        .cart-item {
+            display: flex; gap: 15px; padding: 15px;
+            background: var(--bg-light); border-radius: 12px;
+            margin-bottom: 12px; align-items: center;
+        }
+        .cart-item img {
+            width: 70px; height: 70px; object-fit: cover;
+            border-radius: 10px;
+        }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 3px; }
+        .cart-item-price { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+        .cart-item-qty {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .qty-btn {
+            width: 28px; height: 28px; border-radius: 6px;
+            border: 1px solid var(--border); background: white;
+            cursor: pointer; font-weight: 600; transition: all 0.2s;
+        }
+        .qty-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .remove-item {
+            background: none; border: none; color: var(--danger);
+            cursor: pointer; font-size: 1.1rem; padding: 5px;
+            transition: transform 0.2s;
+        }
+        .remove-item:hover { transform: scale(1.2); }
+        .cart-footer {
+            padding: 25px; border-top: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        .cart-total-row {
+            display: flex; justify-content: space-between;
+            font-size: 1.1rem; font-weight: 600; margin-bottom: 20px;
+        }
+        .cart-total-row .total-price {
+            font-size: 1.4rem; color: var(--primary);
+        }
+        .checkout-btn {
+            width: 100%; padding: 15px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; border: none; font-family: 'Poppins', sans-serif;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,105,148,0.3);
+        }
+        
+        
+        .checkout-section {
+            padding: 60px 5% 40px;
+            max-width: 1200px; margin: 0 auto;
+        }
+        .checkout-section h1 {
+            font-size: 2.2rem; margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background-clip: text; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .checkout-section > p { color: var(--text-light); margin-bottom: 40px; }
+        .checkout-grid {
+            display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px;
+        }
+        .form-card {
+            background: white; border-radius: 20px;
+            padding: 35px; box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .form-card h2 {
+            font-size: 1.3rem; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .form-card h2 i { color: var(--primary); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block; font-weight: 500; font-size: 0.9rem;
+            margin-bottom: 8px; color: var(--text);
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 14px 18px;
+            border: 2px solid var(--border); border-radius: 12px;
+            font-family: 'Poppins', sans-serif; font-size: 0.95rem;
+            transition: all 0.3s; background: var(--bg-light);
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: var(--primary);
+            background: white;
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .form-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+        .order-summary {
+            background: white; border-radius: 20px;
+            padding: 35px; box-shadow: var(--shadow);
+            border: 1px solid var(--border); height: fit-content;
+        }
+        .order-summary h2 {
+            font-size: 1.3rem; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .order-summary h2 i { color: var(--primary); }
+        .summary-item {
+            display: flex; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+        .summary-item:last-of-type { border-bottom: 2px solid var(--text); }
+        .summary-total {
+            display: flex; justify-content: space-between;
+            padding-top: 15px; font-size: 1.2rem; font-weight: 700;
+        }
+        .summary-total span:last-child { color: var(--primary); }
+        .place-order-btn {
+            width: 100%; margin-top: 25px; padding: 16px;
+            border-radius: 12px; border: none;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white; font-family: 'Poppins', sans-serif;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .place-order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,105,148,0.3);
+        }
+        
+        .pod-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white; padding: 8px 20px; border-radius: 30px;
+            font-size: 0.85rem; font-weight: 600; margin-bottom: 20px;
+        }
+        .pod-badge i { font-size: 1rem; }
+        
+        .distance-calc {
+            background: linear-gradient(135deg, #f0f9ff, #e0f7fa);
+            border-radius: 16px; padding: 25px; margin-bottom: 25px;
+            border: 2px dashed var(--accent);
+        }
+        .distance-calc h3 {
+            font-size: 1rem; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .distance-calc h3 i { color: var(--primary); }
+        .distance-input-row {
+            display: flex; gap: 10px; align-items: flex-end;
+        }
+        .distance-input-row .form-group { flex: 1; margin-bottom: 0; }
+        .distance-input-row input {
+            font-weight: 600; color: var(--primary);
+        }
+        .calc-btn {
+            padding: 14px 20px; border-radius: 12px;
+            background: var(--primary); color: white;
+            border: none; font-family: 'Poppins', sans-serif;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .calc-btn:hover { background: var(--primary-dark); }
+        .distance-result {
+            margin-top: 15px; padding: 15px;
+            background: white; border-radius: 12px;
+            display: none;
+        }
+        .distance-result.show { display: block; }
+        .distance-result p {
+            font-size: 0.9rem; color: var(--text-light); margin-bottom: 5px;
+        }
+        .distance-result .fee-display {
+            font-size: 1.5rem; font-weight: 700; color: var(--primary);
+        }
+        
+        .contact-section {
+            padding: 60px 5%;
+            background: linear-gradient(135deg, #f0f9ff, #e0f7fa);
+        }
+        .contact-section .section-header { margin-bottom: 40px; }
+        .contact-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+            max-width: 1000px; margin: 0 auto;
+        }
+        .contact-card {
+            background: white; border-radius: 20px; padding: 40px 30px;
+            text-align: center; box-shadow: var(--shadow);
+            border: 1px solid var(--border); transition: all 0.3s;
+        }
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .contact-icon {
+            width: 70px; height: 70px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 1.8rem;
+        }
+        .contact-card.whatsapp .contact-icon {
+            background: #dcf8c6; color: #25d366;
+        }
+        .contact-card.email .contact-icon {
+            background: #e3f2fd; color: #2196f3;
+        }
+        .contact-card.location .contact-icon {
+            background: #fff3e0; color: #ff9800;
+        }
+        .contact-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
+        .contact-card p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px; }
+        .contact-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 25px; border-radius: 30px;
+            text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .contact-card.whatsapp .contact-btn {
+            background: #25d366; color: white;
+        }
+        .contact-card.email .contact-btn {
+            background: #2196f3; color: white;
+        }
+        .contact-card.location .contact-btn {
+            background: #ff9800; color: white;
+        }
+        .contact-btn:hover { transform: scale(1.05); opacity: 0.9; }
+        
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--text); color: white; padding: 15px 30px;
+            border-radius: 12px; font-weight: 500; z-index: 3000;
+            opacity: 0; transition: all 0.4s; display: flex; align-items: center; gap: 10px;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success { background: var(--success); }
+        .toast.warning { background: var(--warning); }
+        
+        .footer {
+            background: var(--text); color: white; padding: 40px 5%;
+            text-align: center;
+        }
+        .footer p { opacity: 0.7; font-size: 0.9rem; }
+        .footer-links {
+            display: flex; justify-content: center; gap: 30px; margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: white; text-decoration: none; opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .footer-links a:hover { opacity: 1; }
+        
+        
+        @media (max-width: 1024px) {
+            .checkout-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; max-width: 400px; }
+            .fish-3d-scene { width: 300px; height: 220px; }
+            .fish-realistic { width: 280px; height: 160px; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .category-grid { grid-template-columns: 1fr; }
+            .shop-grid { grid-template-columns: 1fr; }
+            .cart-sidebar { width: 100%; }
+            .form-row { grid-template-columns: 1fr; }
+            .distance-input-row { flex-direction: column; }
+            .distance-input-row .calc-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="navbar" id="navbar">
+    <a href="#" class="logo" onclick="showPage('home')">
+        <i class="fas fa-fish"></i> Aqua Market
+    </a>
+    <ul class="nav-links">
+        <li><a href="#" class="active" onclick="showPage('home')" data-page="home">Home</a></li>
+        <li><a href="#" onclick="showPage('shop')" data-page="shop">Shop</a></li>
+        <li><a href="#" onclick="showPage('checkout')" data-page="checkout">Checkout & Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+        <button class="cart-btn" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </div>
+</nav>
+
+<!-- ===== PAGE 1: HOME ===== -->
+<div class="page active" id="page-home">
+    <section class="hero-section">
+        <div class="water-caustics"></div>
+        <div class="bubbles-3d" id="bubbles3d"></div>
+        <div class="water-surface"></div>
+        <div class="water-ripple"></div>
+        <div class="water-ripple" style="animation-delay: 0.5s;"></div>
+        
+        <!-- Splash particles -->
+        <div class="splash-container" id="splashContainer"></div>
+        
+        <!-- Water droplets -->
+        <div class="water-droplets" id="waterDroplets"></div>
+        
+        <!-- 3D Fish -->
+        <div class="fish-3d-scene">
+            <svg class="fish-realistic" viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+                <!-- Shadow/Depth layer -->
+                <ellipse cx="195" cy="115" rx="105" ry="50" fill="rgba(0,50,80,0.15)" transform="translate(8,8)"/>
+                
+                <!-- Main body with gradient for 3D roundness -->
+                <defs>
+                    <linearGradient id="bodyGrad3D" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#00a8cc"/>
+                        <stop offset="25%" style="stop-color:#006994"/>
+                        <stop offset="50%" style="stop-color:#004d70"/>
+                        <stop offset="75%" style="stop-color:#003d5c"/>
+                        <stop offset="100%" style="stop-color:#002a40"/>
+                    </linearGradient>
+                    <linearGradient id="bodyHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:rgba(255,255,255,0.4)"/>
+                        <stop offset="50%" style="stop-color:rgba(255,255,255,0)"/>
+                        <stop offset="100%" style="stop-color:rgba(0,0,0,0.1)"/>
+                    </linearGradient>
+                    <linearGradient id="tailGrad3D" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#003d5c"/>
+                        <stop offset="50%" style="stop-color:#006994"/>
+                        <stop offset="100%" style="stop-color:#00bcd4"/>
+                    </linearGradient>
+                    <linearGradient id="finGrad3D" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:rgba(0,188,212,0.8)"/>
+                        <stop offset="100%" style="stop-color:rgba(0,105,148,0.4)"/>
+                    </linearGradient>
+                    <radialGradient id="eyeGrad" cx="40%" cy="40%">
+                        <stop offset="0%" style="stop-color:#ffffff"/>
+                        <stop offset="70%" style="stop-color:#e0e0e0"/>
+                        <stop offset="100%" style="stop-color:#b0b0b0"/>
+                    </radialGradient>
+                    <radialGradient id="pupilGrad" cx="35%" cy="35%">
+                        <stop offset="0%" style="stop-color:#1a1a2e"/>
+                        <stop offset="80%" style="stop-color:#0a0a1a"/>
+                        <stop offset="100%" style="stop-color:#000000"/>
+                    </radialGradient>
+                </defs>
+                
+                <!-- Tail (animated) -->
+                <g class="fish-tail">
+                    <path d="M 55 90 Q 15 50 5 70 Q 20 90 5 110 Q 15 130 55 110 Z" fill="url(#tailGrad3D)"/>
+                    <!-- Tail fin rays -->
+                    <path d="M 55 90 Q 30 65 10 75" stroke="rgba(0,188,212,0.5)" stroke-width="1" fill="none"/>
+                    <path d="M 55 100 Q 25 90 8 95" stroke="rgba(0,188,212,0.5)" stroke-width="1" fill="none"/>
+                    <path d="M 55 110 Q 30 115 10 105" stroke="rgba(0,188,212,0.5)" stroke-width="1" fill="none"/>
+                </g>
+                
+                <!-- Bottom fin (animated) -->
+                <g class="fish-fin-bottom">
+                    <path d="M 140 155 Q 170 195 210 160 Q 180 170 140 155 Z" fill="url(#finGrad3D)"/>
+                </g>
+                
+                <!-- Main body -->
+                <ellipse cx="190" cy="100" rx="115" ry="52" fill="url(#bodyGrad3D)"/>
+                
+                <!-- Body highlight for 3D roundness -->
+                <ellipse cx="170" cy="85" rx="80" ry="30" fill="url(#bodyHighlight)" class="fish-body-shine"/>
+                
+                <!-- Top fin (animated) -->
+                <g class="fish-fin-top">
+                    <path d="M 130 52 Q 160 5 200 48 Q 170 35 130 52 Z" fill="url(#finGrad3D)"/>
+                    <!-- Fin rays -->
+                    <path d="M 140 45 Q 155 20 175 40" stroke="rgba(255,255,255,0.3)" stroke-width="0.8" fill="none"/>
+                    <path d="M 150 42 Q 165 15 185 38" stroke="rgba(255,255,255,0.3)" stroke-width="0.8" fill="none"/>
+                    <path d="M 160 40 Q 175 12 195 36" stroke="rgba(255,255,255,0.3)" stroke-width="0.8" fill="none"/>
+                </g>
+                
+                <!-- Side fin -->
+                <path d="M 160 100 Q 185 130 215 105 Q 195 115 160 100 Z" fill="url(#finGrad3D)" opacity="0.7"/>
+                
+                <!-- Gill cover -->
+                <path d="M 235 65 Q 255 100 235 135 Q 225 100 235 65 Z" fill="rgba(0,60,90,0.3)"/>
+                <path d="M 238 70 Q 250 100 238 130" stroke="rgba(0,188,212,0.3)" stroke-width="1.5" fill="none"/>
+                
+                <!-- Scales pattern -->
+                <g opacity="0.12">
+                    <ellipse cx="120" cy="80" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="140" cy="75" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="160" cy="70" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="180" cy="68" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="200" cy="70" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="130" cy="95" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="150" cy="90" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="170" cy="85" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="190" cy="85" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="210" cy="90" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="140" cy="110" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="160" cy="105" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="180" cy="100" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                    <ellipse cx="200" cy="105" rx="10" ry="5" fill="none" stroke="white" stroke-width="0.8"/>
+                </g>
+                
+                <!-- Lateral line -->
+                <path d="M 80 100 Q 150 95 280 100" stroke="rgba(0,188,212,0.3)" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/>
+                
+                <!-- Eye -->
+                <circle cx="285" cy="78" r="14" fill="url(#eyeGrad)" stroke="rgba(0,0,0,0.2)" stroke-width="0.5"/>
+                <circle cx="288" cy="75" r="7" fill="url(#pupilGrad)"/>
+                <circle cx="290" cy="72" r="2.5" fill="white" opacity="0.9"/>
+                <circle cx="285" cy="78" r="1.5" fill="white" opacity="0.5"/>
+                <!-- Eye lid for blink -->
+                <path d="M 268 65 Q 285 58 302 65" stroke="rgba(0,60,90,0.5)" stroke-width="2" fill="none" class="fish-eye-lid"/>
+                
+                <!-- Mouth -->
+                <path d="M 300 92 Q 315 98 305 108" stroke="#002a40" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <path d="M 302 95 Q 310 100 305 105" stroke="rgba(255,255,255,0.3)" stroke-width="1" fill="none"/>
+                
+                <!-- Nostril -->
+                <ellipse cx="295" cy="88" rx="2" ry="1.5" fill="rgba(0,0,0,0.3)"/>
+            </svg>
+        </div>
+        
+        <div class="hero-content">
+            <h1>Fresh From The Water</h1>
+            <p>Premium quality fish and seafood delivered straight from Nigerian waters to your doorstep. Pay only when your order arrives!</p>
+            <a href="#" class="btn-primary" onclick="showPage('shop')">
+                <i class="fas fa-shopping-basket"></i> Start Shopping
+            </a>
+        </div>
+    </section>
+    
+    <section class="category-preview">
+        <div class="section-header">
+            <h2>Our Categories</h2>
+            <p>Explore our wide range of fresh fish and seafood</p>
+        </div>
+        <div class="category-grid">
+            <div class="category-card" onclick="showPage('shop'); setTimeout(()=>filterProducts('scaled'),100)">
+                <img src="https://kimi-web-img.moonshot.cn/img/cdn.shopify.com/a2b083294436c3bc71cb03d2d506d05985ea34f3.jpg" alt="Scaled Fishes">
+                <div class="category-card-body">
+                    <i class="fas fa-fish cat-icon" style="color: var(--primary);"></i>
+                    <h3>Scaled Fishes</h3>
+                    <p>Tilapia, Mackerel, Croaker & more</p>
+                </div>
+            </div>
+            <div class="category-card" onclick="showPage('shop'); setTimeout(()=>filterProducts('scaleless'),100)">
+                <img src="https://kimi-web-img.moonshot.cn/img/www.supermart.ng/d1aaf851fdd0ee1bca320b209e2bddf5a8695962.jpg" alt="Scaleless Fishes">
+                <div class="category-card-body">
+                    <i class="fas fa-water cat-icon" style="color: var(--accent);"></i>
+                    <h3>Scaleless Fishes</h3>
+                    <p>Catfish, Pangasius, Eel & more</p>
+                </div>
+            </div>
+            <div class="category-card" onclick="showPage('shop'); setTimeout(()=>filterProducts('shelled'),100)">
+                <img src="https://kimi-web-img.moonshot.cn/img/janelstores.com/f41741095fcfcf75482770311f1d5937029d44d5.jpg" alt="Shelled Fishes">
+                <div class="category-card-body">
+                    <i class="fas fa-shrimp cat-icon" style="color: #ff9800;"></i>
+                    <h3>Shelled Fishes</h3>
+                    <p>Crayfish, Prawns, Snails, Periwinkle</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ===== PAGE 2: SHOP ===== -->
+<div class="page" id="page-shop">
+    <div class="shop-header">
+        <h1><i class="fas fa-store"></i> Our Fish Market</h1>
+        <p>Fresh, healthy, and sustainably sourced from Nigerian waters</p>
+    </div>
+    <div class="shop-filters">
+        <button class="filter-btn active" onclick="filterProducts('all')">All Products</button>
+        <button class="filter-btn" onclick="filterProducts('scaled')">Scaled Fishes</button>
+        <button class="filter-btn" onclick="filterProducts('scaleless')">Scaleless Fishes</button>
+        <button class="filter-btn" onclick="filterProducts('shelled')">Shelled Fishes</button>
+    </div>
+    <div class="shop-grid" id="shopGrid">
+        <!-- Products injected by JS -->
+    </div>
+</div>
+<div class="page" id="page-checkout">
+    <div class="checkout-section">
+        <h1><i class="fas fa-credit-card"></i> Checkout</h1>
+        <p>Complete your order and we will deliver fresh fish to your doorstep</p>
+        
+        <div class="checkout-grid">
+            <div class="form-card">
+                <div class="pod-badge">
+                    <i class="fas fa-hand-holding-usd"></i> Pay on Delivery (POD)
+                </div>
+                
+                <h2><i class="fas fa-map-marker-alt"></i> Delivery Address</h2>
+                <form id="deliveryForm" onsubmit="placeOrder(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" id="firstName" placeholder="John" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name *</label>
+                            <input type="text" id="lastName" placeholder="Doe" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" placeholder="john@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="phone" placeholder="+234 80X XXX XXXX" required>
+                    </div>
+                    
+                    <!-- Distance Calculator -->
+                    <div class="distance-calc">
+                        <h3><i class="fas fa-route"></i> Calculate Delivery Fee</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 12px;">
+                            Enter your distance from our store (in km). Rate: <strong>100 Naira per km</strong>
+                        </p>
+                        <div class="distance-input-row">
+                            <div class="form-group">
+                                <label>Distance (km)</label>
+                                <input type="number" id="distanceKm" placeholder="e.g. 15" min="0" step="0.1" oninput="calculateDeliveryFee()">
+                            </div>
+                            <button type="button" class="calc-btn" onclick="calculateDeliveryFee()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                        </div>
+                        <div class="distance-result" id="distanceResult">
+                            <p>Distance: <strong id="distDisplay">0 km</strong></p>
+                            <p>Delivery Fee: <span class="fee-display" id="feeDisplay">N0</span></p>
+                            <p style="font-size: 0.8rem; margin-top: 5px;">N100 x <span id="kmDisplay">0</span> km = N<span id="calcDisplay">0</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Street Address *</label>
+                        <input type="text" id="address" placeholder="123 Main Street, Estate Name" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" id="city" placeholder="Lagos" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State *</label>
+                            <select id="state" required onchange="autoDistanceByState()">
+                                <option value="">Select State</option>
+                                <option value="Lagos" data-dist="5">Lagos (approx 5km)</option>
+                                <option value="Ogun" data-dist="45">Ogun (approx 45km)</option>
+                                <option value="Oyo" data-dist="130">Oyo (approx 130km)</option>
+                                <option value="Osun" data-dist="200">Osun (approx 200km)</option>
+                                <option value="Ekiti" data-dist="280">Ekiti (approx 280km)</option>
+                                <option value="Ondo" data-dist="300">Ondo (approx 300km)</option>
+                                <option value="Edo" data-dist="350">Edo (approx 350km)</option>
+                                <option value="Delta" data-dist="400">Delta (approx 400km)</option>
+                                <option value="Rivers" data-dist="500">Rivers (approx 500km)</option>
+                                <option value="Abuja" data-dist="750">Abuja FCT (approx 750km)</option>
+                                <option value="Kano" data-dist="1000">Kano (approx 1000km)</option>
+                                <option value="Kaduna" data-dist="800">Kaduna (approx 800km)</option>
+                                <option value="Other" data-dist="0">Other (Enter manually)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Instructions (Optional)</label>
+                        <textarea id="instructions" placeholder="Any special delivery instructions..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div>
+                <div class="order-summary">
+                    <h2><i class="fas fa-receipt"></i> Order Summary</h2>
+                    <div id="orderSummaryItems">
+                        <div class="summary-item">
+                            <span>No items in cart</span>
+                            <span>N0</span>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <span>Delivery Fee</span>
+                        <span id="deliveryFeeDisplay">N0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total (Pay on Delivery)</span>
+                        <span id="orderTotal">N0</span>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border-radius: 12px; text-align: center;">
+                        <p style="font-size: 0.9rem; color: #2e7d32; font-weight: 600;">
+                            <i class="fas fa-hand-holding-usd"></i> You pay only when your order is delivered!
+                        </p>
+                    </div>
+                    <button class="place-order-btn" onclick="placeOrder(event)">
+                        <i class="fas fa-check-circle"></i> Place Order (Pay on Delivery)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <section class="contact-section">
+        <div class="section-header">
+            <h2>Customer Service</h2>
+            <p>We are here to help! Reach out to us anytime</p>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card whatsapp">
+                <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                <h3>WhatsApp</h3>
+                <p>Chat with us on WhatsApp for quick responses and order tracking</p>
+                <a href="https://wa.me/2348070912057" target="_blank" class="contact-btn">
+                    <i class="fab fa-whatsapp"></i> Chat Now
+                </a>
+            </div>
+            <div class="contact-card email">
+                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                <h3>Email</h3>
+                <p>Send us an email for inquiries, feedback, or bulk orders</p>
+                <a href="mailto:adeniyifunmilayo1999@gmail.com" class="contact-btn">
+                    <i class="fas fa-paper-plane"></i> Send Email
+                </a>
+            </div>
+            <div class="contact-card location">
+                <div class="contact-icon"><i class="fas fa-map-pin"></i></div>
+                <h3>Delivery Coverage</h3>
+                <p>We deliver fresh fish across all major cities in Nigeria</p>
+                <span class="contact-btn" style="cursor: default;">
+                    <i class="fas fa-truck"></i> Nationwide
+                </span>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <h2><i class="fas fa-shopping-cart"></i> Your Cart</h2>
+        <button class="close-cart" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items" id="cartItems">
+        <div class="cart-empty">
+            <i class="fas fa-shopping-basket"></i>
+            <p>Your cart is empty</p>
+            <p style="font-size: 0.85rem; margin-top: 10px;">Add some fresh fish!</p>
+        </div>
+    </div>
+    <div class="cart-footer">
+        <div class="cart-total-row">
+            <span>Total:</span>
+            <span class="total-price" id="cartTotal">N0</span>
+        </div>
+        <button class="checkout-btn" onclick="goToCheckout()">
+            <i class="fas fa-arrow-right"></i> Proceed to Checkout
+        </button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg">Added to cart!</span></div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-links">
+        <a href="#" onclick="showPage('home')">Home</a>
+        <a href="#" onclick="showPage('shop')">Shop</a>
+        <a href="#" onclick="showPage('checkout')">Checkout</a>
+        <a href="https://wa.me/2348070912057" target="_blank">WhatsApp</a>
+        <a href="mailto:adeniyifunmilayo1999@gmail.com">Email</a>
+    </div>
+    <p>2026 Aqua Market Nigeria. Fresh fish delivered to your door. Pay on Delivery.</p>
+</footer>
+
+<script>
+const products = [
+    { id: 1, name: "Fresh Tilapia", category: "scaled", price: 3500, unit: "per kg",
+      desc: "Farm-raised tilapia, cleaned and ready to cook. Mild flavor, firm texture.",
+      image: "https://kimi-web-img.moonshot.cn/img/cdn.shopify.com/a2b083294436c3bc71cb03d2d506d05985ea34f3.jpg" },
+    { id: 2, name: "Titus Fish (Mackerel)", category: "scaled", price: 2800, unit: "per kg",
+      desc: "Premium smoked Titus mackerel. Rich in Omega-3, perfect for soups and stews.",
+      image: "https://kimi-web-img.moonshot.cn/img/foodieinlagos.com/bed5cdd8dd4ded29771f04c427bca68798aa44fc.jpeg" },
+    { id: 3, name: "Croaker Fish", category: "scaled", price: 3200, unit: "per kg",
+      desc: "Fresh croaker with sweet, delicate flesh. Great for frying and grilling.",
+      image: "https://kimi-web-img.moonshot.cn/img/cdn.shopify.com/a1f5bcb3a03d270ca85fae86986d0bb3f41100c1.jpg" },
+    { id: 4, name: "Shiny Nose (Bonga)", category: "scaled", price: 1800, unit: "per kg",
+      desc: "Fresh bonga fish, popular in Nigerian cuisine. Excellent for drying or fresh cooking.",
+      image: "https://kimi-web-img.moonshot.cn/img/blogger.googleusercontent.com/4486a0361be1c7032d27b1cdaf3a3d78685e69f4.jpg" },
+    { id: 5, name: "Fresh Catfish", category: "scaleless", price: 4500, unit: "per kg",
+      desc: "Live catfish, freshly harvested. Firm, white flesh with a mild sweet taste.",
+      image: "https://kimi-web-img.moonshot.cn/img/www.supermart.ng/d1aaf851fdd0ee1bca320b209e2bddf5a8695962.jpg" },
+    { id: 6, name: "Pangasius (Dory)", category: "scaleless", price: 3800, unit: "per kg",
+      desc: "Clean, boneless pangasius fillets. Mild flavor, perfect for grilling and frying.",
+      image: "https://kimi-web-img.moonshot.cn/img/www.supermart.ng/d1aaf851fdd0ee1bca320b209e2bddf5a8695962.jpg" },
+    { id: 7, name: "Smoked Catfish", category: "scaleless", price: 5500, unit: "per kg",
+      desc: "Traditionally smoked catfish with authentic Nigerian flavor. Long shelf life.",
+      image: "https://kimi-web-img.moonshot.cn/img/www.supermart.ng/d1aaf851fdd0ee1bca320b209e2bddf5a8695962.jpg" },
+    { id: 8, name: "Dried Crayfish", category: "shelled", price: 8500, unit: "per kg",
+      desc: "Premium dried crayfish, perfect for seasoning soups and stews. Clean and sand-free.",
+      image: "https://kimi-web-img.moonshot.cn/img/cdn.shopify.com/a9b02d39def47ec5759eee0a78ac44887e5e54ea.webp" },
+    { id: 9, name: "Big Dried Prawns", category: "shelled", price: 12000, unit: "per kg",
+      desc: "Large dried prawns (Enitan). Rich umami flavor for premium cooking.",
+      image: "https://kimi-web-img.moonshot.cn/img/stermart.com/7aef4180ed8862b38484812b03d3f6ea9a3f8afd.jpg" },
+    { id: 10, name: "Giant African Snails", category: "shelled", price: 6000, unit: "per kg",
+      desc: "Live giant African snails, cleaned and ready. A delicacy in Nigerian cuisine.",
+      image: "https://kimi-web-img.moonshot.cn/img/i0.wp.com/e0a38b5633923401275bb5f3281cc25c012a6d0c.jpeg" },
+    { id: 11, name: "Periwinkle (Isam)", category: "shelled", price: 2500, unit: "per derica cup",
+      desc: "Fresh periwinkle, essential for Afang, Edikaikong and other Nigerian soups.",
+      image: "https://kimi-web-img.moonshot.cn/img/janelstores.com/f41741095fcfcf75482770311f1d5937029d44d5.jpg" },
+    { id: 12, name: "Dried Crayfish (Whole)", category: "shelled", price: 9500, unit: "per kg",
+      desc: "Whole dried crayfish with shells intact. Authentic taste for traditional dishes.",
+      image: "https://kimi-web-img.moonshot.cn/img/stermart.com/e94fc91917f41db3ecfeb2ee951427e1e2f8495e.jpg" }
+];
+
+let cart = [];
+let currentFilter = 'all';
+let deliveryFee = 0;
+const RATE_PER_KM = 100;
+
+function showPage(pageName) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + pageName).classList.add('active');
+    document.querySelector('.nav-links a[data-page="' + pageName + '"]').classList.add('active');
+    window.scrollTo(0, 0);
+    if (pageName === 'checkout') updateOrderSummary();
+}
+
+function renderProducts(filter) {
+    filter = filter || currentFilter;
+    const grid = document.getElementById('shopGrid');
+    const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+    
+    grid.innerHTML = filtered.map(p => `
+        <div class="product-card" data-category="${p.category}">
+            <div class="product-img-wrap">
+                <img src="${p.image}" alt="${p.name}" loading="lazy">
+                <span class="product-badge">Fresh</span>
+            </div>
+            <div class="product-body">
+                <div class="product-category">${p.category === 'scaled' ? 'Scaled Fish' : p.category === 'scaleless' ? 'Scaleless Fish' : 'Shelled Fish'}</div>
+                <div class="product-name">${p.name}</div>
+                <div class="product-desc">${p.desc}</div>
+                <div class="product-footer">
+                    <div class="product-price">N${p.price.toLocaleString()} <span>/ ${p.unit}</span></div>
+                    <button class="add-to-cart" onclick="addToCart(${p.id}, this)">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterProducts(category) {
+    currentFilter = category;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+    renderProducts(category);
+}
+
+function addToCart(productId, btn) {
+    const product = products.find(p => p.id === productId);
+    const existing = cart.find(item => item.id === productId);
+    
+    if (existing) {
+        existing.qty++;
+    } else {
+        cart.push({ ...product, qty: 1 });
+    }
+    
+    updateCart();
+    showToast(product.name + ' added to cart!', 'success');
+    
+    if (btn) {
+        btn.classList.add('added');
+        btn.innerHTML = '<i class="fas fa-check"></i> Added';
+        setTimeout(() => {
+            btn.classList.remove('added');
+            btn.innerHTML = '<i class="fas fa-plus"></i> Add';
+        }, 1500);
+    }
+}
+
+function removeFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    updateCart();
+    if (document.getElementById('page-checkout').classList.contains('active')) {
+        updateOrderSummary();
+    }
+}
+
+function updateQty(productId, delta) {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) removeFromCart(productId);
+        else updateCart();
+    }
+    if (document.getElementById('page-checkout').classList.contains('active')) {
+        updateOrderSummary();
+    }
+}
+
+function updateCart() {
+    const cartItems = document.getElementById('cartItems');
+    const cartCount = document.getElementById('cartCount');
+    const cartTotal = document.getElementById('cartTotal');
+    
+    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    
+    cartCount.textContent = totalQty;
+    cartTotal.textContent = 'N' + totalPrice.toLocaleString();
+    
+    if (cart.length === 0) {
+        cartItems.innerHTML = `
+            <div class="cart-empty">
+                <i class="fas fa-shopping-basket"></i>
+                <p>Your cart is empty</p>
+                <p style="font-size: 0.85rem; margin-top: 10px;">Add some fresh fish!</p>
+            </div>
+        `;
+    } else {
+        cartItems.innerHTML = cart.map(item => `
+            <div class="cart-item">
+                <img src="${item.image}" alt="${item.name}">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-price">N${item.price.toLocaleString()}</div>
+                </div>
+                <div class="cart-item-qty">
+                    <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                    <span>${item.qty}</span>
+                    <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                </div>
+                <button class="remove-item" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    }
+}
+
+function toggleCart() {
+    document.getElementById('cartSidebar').classList.toggle('open');
+    document.getElementById('cartOverlay').classList.toggle('open');
+}
+
+function goToCheckout() {
+    toggleCart();
+    showPage('checkout');
+}
+
+function calculateDeliveryFee() {
+    const kmInput = document.getElementById('distanceKm');
+    const km = parseFloat(kmInput.value) || 0;
+    deliveryFee = Math.round(km * RATE_PER_KM);
+    
+    document.getElementById('distDisplay').textContent = km + ' km';
+    document.getElementById('feeDisplay').textContent = 'N' + deliveryFee.toLocaleString();
+    document.getElementById('kmDisplay').textContent = km;
+    document.getElementById('calcDisplay').textContent = deliveryFee.toLocaleString();
+    document.getElementById('distanceResult').classList.add('show');
+    
+    updateOrderSummary();
+}
+
+function autoDistanceByState() {
+    const stateSelect = document.getElementById('state');
+    const selectedOption = stateSelect.options[stateSelect.selectedIndex];
+    const dist = parseFloat(selectedOption.getAttribute('data-dist')) || 0;
+    
+    if (dist > 0) {
+        document.getElementById('distanceKm').value = dist;
+        calculateDeliveryFee();
+    }
+}
+
+function updateOrderSummary() {
+    const container = document.getElementById('orderSummaryItems');
+    const totalEl = document.getElementById('orderTotal');
+    const feeEl = document.getElementById('deliveryFeeDisplay');
+    
+    feeEl.textContent = 'N' + deliveryFee.toLocaleString();
+    
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div class="summary-item">
+                <span>No items in cart</span>
+                <span>N0</span>
+            </div>
+        `;
+        totalEl.textContent = 'N' + deliveryFee.toLocaleString();
+    } else {
+        let subtotal = 0;
+        container.innerHTML = cart.map(item => {
+            const itemTotal = item.price * item.qty;
+            subtotal += itemTotal;
+            return `
+                <div class="summary-item">
+                    <span>${item.name} x${item.qty}</span>
+                    <span>N${itemTotal.toLocaleString()}</span>
+                </div>
+            `;
+        }).join('');
+        
+        const total = subtotal + deliveryFee;
+        totalEl.textContent = 'N' + total.toLocaleString();
+    }
+}
+
+function placeOrder(e) {
+    e.preventDefault();
+    
+    if (cart.length === 0) {
+        showToast('Your cart is empty! Add some fish first.', '');
+        return;
+    }
+    
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    
+    if (!firstName || !lastName || !email || !phone || !address || !city || !state) {
+        showToast('Please fill in all required fields!', '');
+        return;
+    }
+    
+    
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const total = subtotal + deliveryFee;
+    
+    showToast('Order placed successfully! Total: N' + total.toLocaleString() + ' - Pay on Delivery', 'success');
+    cart = [];
+    deliveryFee = 0;
+    updateCart();
+    updateOrderSummary();
+    document.getElementById('deliveryForm').reset();
+    document.getElementById('distanceResult').classList.remove('show');
+    document.getElementById('distanceKm').value = '';
+}
+
+function showToast(msg, type) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    toastMsg.textContent = msg;
+    toast.className = 'toast show ' + type;
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function createBubbles3D() {
+    const container = document.getElementById('bubbles3d');
+    for (let i = 0; i < 20; i++) {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble-3d';
+        const size = Math.random() * 25 + 8;
+        bubble.style.width = size + 'px';
+        bubble.style.height = size + 'px';
+        bubble.style.left = Math.random() * 100 + '%';
+        bubble.style.animationDuration = (Math.random() * 6 + 6) + 's';
+        bubble.style.animationDelay = (Math.random() * 6) + 's';
+        container.appendChild(bubble);
+    }
+}
+
+function createSplashParticles() {
+    const container = document.getElementById('splashContainer');
+    const particles = [
+        { size: 8, tx: '-80px', ty: '-100px', delay: 0 },
+        { size: 6, tx: '60px', ty: '-120px', delay: 0.1 },
+        { size: 10, tx: '-40px', ty: '-80px', delay: 0.2 },
+        { size: 5, tx: '100px', ty: '-90px', delay: 0.15 },
+        { size: 7, tx: '-100px', ty: '-70px', delay: 0.25 },
+        { size: 4, tx: '40px', ty: '-110px', delay: 0.05 },
+        { size: 9, tx: '-60px', ty: '-130px', delay: 0.3 },
+        { size: 6, tx: '80px', ty: '-60px', delay: 0.2 },
+    ];
+    
+    particles.forEach(p => {
+        const particle = document.createElement('div');
+        particle.className = 'splash-particle';
+        particle.style.width = p.size + 'px';
+        particle.style.height = p.size + 'px';
+        particle.style.left = '50%';
+        particle.style.top = '50%';
+        particle.style.setProperty('--tx', p.tx);
+        particle.style.setProperty('--ty', p.ty);
+        particle.style.animationDelay = p.delay + 's';
+        container.appendChild(particle);
+    });
+}
+
+function createWaterDroplets() {
+    const container = document.getElementById('waterDroplets');
+    for (let i = 0; i < 12; i++) {
+        const droplet = document.createElement('div');
+        droplet.className = 'droplet';
+        droplet.style.left = (30 + Math.random() * 40) + '%';
+        droplet.style.animationDuration = (Math.random() * 1 + 0.8) + 's';
+        droplet.style.animationDelay = (Math.random() * 4) + 's';
+        container.appendChild(droplet);
+    }
+}
+
+window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderProducts();
+    createBubbles3D();
+    createSplashParticles();
+    createWaterDroplets();
+    updateCart();
+});
+</script>
+
+</body>
+</html>
